@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -7,47 +6,61 @@ import {
 import { OnGatewayInit } from '@nestjs/websockets/interfaces';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway(81, { cors: true }) //tao
 export class ChatGateway implements OnGatewayInit {
   @WebSocketServer()
   server: Server;
 
-  private logger: Logger = new Logger();
+  // private logger: Logger = new Logger();
 
-  afterInit(server: Socket) {
-    this.logger.log('Initialized');
-  }
+  afterInit() {}
 
+  // handleConnection(client: Socket) {
+  //   // console.log(client.id);
+  //   this.server.emit('connected', client.id);
+  // }
+
+  // handleDisconnect(client: Socket) {
+  //   this.server.emit('disconnected', client.id);
+  // }
   // @SubscribeMessage('message')
   // handleMessage(Client: Socket, message: { sender: string; message: string }) {
   //   this.server.emit('messageToClient', message);
   // }
 
-  @SubscribeMessage('joinRoom')
-  handleJoinRoom(Client: Socket, Room: []) {
-    Client.join(Room);
-    Client.emit('joinedRoom', Room);
+  // @SubscribeMessage('createRoom')
+  // handleCreateRoom(Client: Socket, Room: string) {
+  //   Client.join(Room);
+  //   Client.emit('joinedRoom', Room);
+  //   // console.log(Room);
+  // }
 
-    console.log(Client.emit('joinedRoom', Room));
-  }
+  // @SubscribeMessage('joinRoom')
+  // handleJoinRoom(Client: Socket, Room: []) {
+  //   Client.join(Room);
+  //   // Client.emit('joinedRoom', Room);
+  // }
 
-  @SubscribeMessage('leaveRoom')
-  handleLeaveRoom(Client: Socket, Room: string) {
-    Client.leave(Room);
-    Client.emit('leftRoom', Room);
-  }
+  // @SubscribeMessage('listRoom')
+  // handleListRoom(Client: Socket, listRoom: []) {
+  //   this.server.emit('room', Client.id);
+  // }
 
-  @SubscribeMessage('messageToRoom')
+  @SubscribeMessage('messageToServer')
   handleMessage(
-    Client: Socket,
-    Data: {
-      Sender: string;
-      Message: string;
-      Room: Array<string>;
-    },
+    client: Socket,
+    data: { sender: string; room: string; message: string; time: string },
   ) {
-    Data.Room.forEach((e) => {
-      this.server.in(`${e}`).emit('messageToRoom', Data);
-    });
+    this.server.emit('messageToClient', data);
   }
+
+  // @SubscribeMessage('img')
+  // handleFile(file: any) {
+  //   console.log(file); // <Buffer 25 50 44 ...>
+
+  //   // save the content to the disk, for example
+  //   // writeFile('/tmp/upload', file, (err) => {
+  //   //   callback({ message: err ? 'failure' : 'success' });
+  //   // });
+  // }
 }

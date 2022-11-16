@@ -4,30 +4,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #555;
+    }
+
+    img {
+      width: 20%;
+    }
+
+    div,
+    h2,
+    label {
+      max-width: 70%;
+      margin: auto;
+      background: white;
+      padding: 10px;
+      height: 100%;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    sup {
+      margin-left: 90%;
+    }
+
+    li {
+      /* display: inline-block; */
+      word-break: break-all;
+    }
+
+    #messages {
+      border-style: solid;
+      height: 300px;
+      overflow-y: scroll;
+      /* display: flex;
+      flex-direction: column-reverse;
+      scroll-snap-align: end;
+      overscroll-behavior-y: contain;
+      scroll-snap-type: y proximity; */
+      /* direction: rtl; */
+    }
+  </style>
 </head>
 
 <body>
-  <select id="room" onclick="joinRoom()">
+  <div id="messages"></div>
+
+  <div>
+    <div>Name:</div>
+    <h2 id="name"></h2>
+  </div>
+
+  <div>
+    <div><input type="text" id="room">
+      <button onclick="createRoom()">Create Room</button>
+      <button onclick="joinRoom()">Join Room</button>
+    </div>
+    <div>
+      <h1 id="listRoom" onchange="listRoom()"></h1>
+    </div>
+  </div>
+  <!-- <select id="room" onclick="joinRoom()">
     <option value="1">test1</option>
     <option value="2" selected="selected">test2</option>
     <option value="3">test3</option>
   </select>
-  <button onclick="leftRoom()"> Leave</button>
-  <div id="human">
-    <ul id="person"></ul>
-    <ul id="messages"></ul>
+  <button onclick="leftRoom()"> Leave</button> -->
+  <div>
+    <div><textarea id="text" style="width: 100%;height:100px;"></textarea></div>
+    <div><input style="width: 100%" id="img" type="file" multiple> </div>
+    <div><img id="blah" /></div>
+    <div><button onclick="handleSubmitNewMessage()">Submit</button></div>
   </div>
+
+
   <!-- <div>
     <ul id="message">Client:</ul>
   </div> -->
 
-  <div>
-    <input id="message" type="text">
-    <button onclick="handleSubmitNewMessage()">Submit</button>
-  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"></script>
   <script src="./chat-socket.js"></script>
+
 </body>
 
 </html>
