@@ -10,7 +10,8 @@ function App() {
 	const [text, setText] = useState("");
 	const [person, setPerson] = useState("");
 	const [check, setCheck] = useState(false);
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<any>([]);
+
 	const send = async () => {
 		const date = new Date();
 		const h = date.getHours();
@@ -30,18 +31,23 @@ function App() {
 	};
 
 	useEffect(() => {
-		socket.on("messagesToClient", (data) => {
-			// setMessages((list) => [...list, data]);
-			// setMessages(data);
-			console.log(data);
+		socket.on("messageToClient", (data) => {
+			// setMessages([...messages]);
+			// // console.log(data);
+			// const data = {
+			// 	sender: res.sender,
+			// 	message: res.message,
+			// 	time: res.time,
+			// };
+			// let temp = messages;
+			// temp.push(data);
+			setMessages([...messages, data]);
 		});
 	}, [socket]);
 
 	return (
 		<div>
-			<div id="messages">
-				<>{console.log(messages)}</>
-			</div>
+			<div id="messages">{messages.map()}</div>
 			<div>
 				<div>
 					Name: {person}
