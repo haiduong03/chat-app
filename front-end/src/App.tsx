@@ -11,7 +11,6 @@ function App() {
 	const [person, setPerson] = useState("");
 	const [check, setCheck] = useState(false);
 	const [messages, setMessages] = useState<any>([]);
-
 	const send = async () => {
 		const date = new Date();
 		const h = date.getHours();
@@ -25,29 +24,34 @@ function App() {
 					message: text,
 					time: time,
 				};
+
 				await socket.emit("messageToServer", data);
+				setMessages((list: any) => [...list, data]);
 			}
 		}
 	};
 
 	useEffect(() => {
-		socket.on("messageToClient", (data) => {
-			// setMessages([...messages]);
-			// // console.log(data);
-			// const data = {
-			// 	sender: res.sender,
-			// 	message: res.message,
-			// 	time: res.time,
-			// };
-			// let temp = messages;
-			// temp.push(data);
-			setMessages([...messages, data]);
+		socket.on("messageToClient", (data: any) => {
+			setMessages((list: any) => [...list, data]);
 		});
 	}, [socket]);
 
 	return (
 		<div>
-			<div id="messages">{messages.map()}</div>
+			<div id="messages">
+				{messages &&
+					messages.map((data: any) => (
+						<>
+							<span>
+								tên người gửi: {data.sender}
+							</span>{" "}
+							<br />
+							<span>message: {data.message}</span>
+							<br />
+						</>
+					))}
+			</div>
 			<div>
 				<div>
 					Name: {person}
