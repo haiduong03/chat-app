@@ -124,27 +124,28 @@ const handleSubmitNewMessage = async () => {
 };
 
 socket.on("messageToClient", async (data) => {
-	const human = document.createElement("h3");
-	const setName = document.createTextNode(data.sender);
-	human.appendChild(setName);
+	// const human = document.createElement("h3");
+	// const setName = document.createTextNode(data.sender);
+	// human.appendChild(setName);
 
-	const text = document.createElement("li");
-	const setText = document.createTextNode(data.message);
-	text.appendChild(setText);
+	// const text = document.createElement("li");
+	// const setText = document.createTextNode(data.message);
+	// text.appendChild(setText);
 
-	const time = document.createElement("sup");
-	const setTime = document.createTextNode(data.time);
-	time.appendChild(setTime);
+	// const time = document.createElement("sup");
+	// const setTime = document.createTextNode(data.time);
+	// time.appendChild(setTime);
 
-	const a = document.createElement("ul");
-	a.appendChild(human);
-	a.appendChild(text);
-	a.appendChild(time);
+	// const a = document.createElement("ul");
+	// a.appendChild(human);
+	// a.appendChild(text);
+	// a.appendChild(time);
 
-	const b = document.getElementById("messages");
-	b.appendChild(a);
-	b.scrollIntoView(false);
-	b.scrollTop = b.scrollHeight;
+	// const b = document.getElementById("messages");
+	// b.appendChild(a);
+	// b.scrollIntoView(false);
+	// b.scrollTop = b.scrollHeight;
+	console.log(data);
 });
 
 // socket.on("connected", async (data) => {

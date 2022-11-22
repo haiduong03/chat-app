@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
-import { v4 } from "uuid";
-import { listenerCount } from "process";
 
 const socket = io("http://localhost:81", {
-	transports: ["websocket", "polling", "flashsocket"],
+	transports: ["websocket", "polling"],
 });
 
 function App() {
-	const [text, setText] = useState("");
-	const [person, setPerson] = useState("");
-	const [check, setCheck] = useState(false);
-	const [messages, setMessages] = useState<any>([]);
+	const [text, setText] = useState<string>("");
+	const [person, setPerson] = useState<string>("");
+	const [check, setCheck] = useState<boolean>(false);
+	const [messages, setMessages] = useState<any[]>([]);
+	const listRef = useRef<HTMLUListElement | any>(null);
 
 	const result = messages.map((data: any) => (
-		<h4 key={data.id}>
-			<ul>tên người gửi: {data.sender}</ul>
-			<ul>message: {data.message}</ul>
-		</h4>
+		<ul key={data.id}>
+			<h3>{data.sender}</h3>
+			<li>{data.message}</li>
+			<sup>{data.time}</sup>
+		</ul>
 	));
 
 	const send = async () => {
@@ -30,7 +30,6 @@ function App() {
 		else {
 			if (text.trim().length > 0) {
 				const data = {
-					id: v4(),
 					sender: person,
 					message: text,
 					time: time,
@@ -40,32 +39,39 @@ function App() {
 			}
 		}
 	};
+
 	useEffect(() => {
 		socket.on("messageToClient", (data) => {
 			setMessages(messages.concat([data]));
 		});
-	}, [socket, messages]);
+		listRef.current?.lastElementChild?.scrollIntoView();
+	}, [messages]);
 
 	return (
 		<div>
-			<div id="messages">{result}</div>
 			<div>
-				<div>
-					Name: {person}
-					{!check && (
-						<div>
-							Enter name:
-							<input
-								type="text"
-								value={person}
-								onChange={(e) => {
-									setPerson(e.target.value);
-								}}
-								onBlur={() => setCheck(true)}
-							/>
-						</div>
-					)}
-				</div>
+				Room: <b>Testing</b>{" "}
+			</div>
+			<div id="messages" ref={listRef}>
+				{result}
+			</div>
+			<div>
+				Name: &emsp; {person}
+				{!check && (
+					<div>
+						Enter name: &emsp;
+						<input
+							type="text"
+							value={person}
+							onChange={(e) => {
+								setPerson(e.target.value);
+							}}
+							onBlur={() => {
+								if (person) setCheck(true);
+							}}
+						/>
+					</div>
+				)}
 			</div>
 			<div>
 				<textarea
