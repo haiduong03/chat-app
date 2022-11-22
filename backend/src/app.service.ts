@@ -16,7 +16,7 @@ export class AppService {
 
   async listUser() {
     const listUser = await this.userModel.find({});
-    console.log(listUser);
+    return listUser;
   }
 
   // async updateUser(user: User): Promise<User> {

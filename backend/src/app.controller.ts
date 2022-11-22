@@ -8,12 +8,12 @@ export class AppController {
 
   @Post()
   async createUser(@Body() user: User) {
-    console.log(this.appService.createUser(user));
+    return await this.appService.createUser(user);
   }
 
   @Get()
   async listUser() {
-    console.log(this.appService.listUser());
+    return await this.appService.listUser();
   }
 
   // @Put('/:id')
