@@ -5,13 +5,19 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
+  // @Prop({ unique: true, autoIncrement: true })
+  // id: number;
+
+  // @Prop({ required: true, unique: true })
+  // email: string;
+
+  @Prop({ unique: true })
   userName: String;
 
   @Prop({ required: true })
   password: String;
 
-  @Prop()
+  @Prop({ default: 0 })
   status: Boolean;
 }
 

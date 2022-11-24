@@ -1,10 +1,11 @@
-import { userModel } from '../model/user.schema';
+import { userModel } from '../model/user.model';
 import { Module } from '@nestjs/common';
 import { UserController } from '../controller/user.controller';
 import { UserService } from '../service/user.service';
 import { ChatGateway } from '../socket/chat.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
       },
     ]),
     ConfigModule.forRoot(),
+    JwtModule.register({ secret: process.env.TOKEN_KEY }),
   ],
   controllers: [UserController],
   providers: [UserService, ChatGateway],
