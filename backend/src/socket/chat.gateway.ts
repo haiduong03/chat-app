@@ -34,8 +34,7 @@ export class ChatGateway implements OnGatewayInit {
   handleMessage(client: Socket, data: Messages) {
     // const message = new essage();
     this.server.emit('messageToClient', data);
-    async () => {
-      await new this.message(data).save();
-    };
+
+    return new this.message(data).save();
   }
 }

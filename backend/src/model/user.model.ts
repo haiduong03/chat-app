@@ -64,7 +64,7 @@ export class Messages {
   sender: string;
 
   @Prop({ required: true })
-  messages: string;
+  message: string;
 
   @Prop({ required: true })
   time: string;
