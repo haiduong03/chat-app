@@ -16,6 +16,10 @@ export class ChatGateway implements OnGatewayInit {
   afterInit() {
     this.logger.log('Initialized!');
   }
+  @SubscribeMessage('typing')
+  handleTyping(client: Socket, sender: string) {
+    this.server.emit('messageToClient', `${sender} is typing ...`);
+  }
 
   @SubscribeMessage('messageToServer')
   handleMessage(

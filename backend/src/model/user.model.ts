@@ -1,24 +1,72 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
+export type ReqFriend = RequestFriend & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
-  // @Prop({ unique: true, autoIncrement: true })
-  // id: number;
+  @Prop({ type: SchemaTypes.ObjectId })
+  id: Types.ObjectId;
 
-  // @Prop({ required: true, unique: true })
-  // email: string;
-
-  @Prop({ unique: true })
-  userName: String;
+  @Prop({ unique: true, required: true })
+  email: string;
 
   @Prop({ required: true })
-  password: String;
+  phone: number;
+
+  @Prop({ unique: true, required: true })
+  name: string;
+
+  @Prop({ required: true })
+  password: string;
 
   @Prop({ default: 0 })
-  status: Boolean;
+  status: boolean;
+
+  @Prop()
+  friend?: string[];
+
+  @Prop()
+  room?: string[];
+}
+
+@Schema({ timestamps: true })
+export class RequestFriend {
+  @Prop({ unique: true, required: true })
+  from: string;
+
+  @Prop({ required: true })
+  to: string;
+
+  @Prop({ default: 0 })
+  status: boolean;
+}
+
+@Schema()
+export class Room {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ default: 'admin' })
+  role?: string;
+}
+
+@Schema()
+export class Messages {
+  @Prop({ required: true })
+  room: string;
+
+  @Prop({ required: true })
+  messages: string;
+
+  @Prop({ required: true })
+  date: string;
+
+  @Prop()
+  from: User;
 }
 
 export const userModel = SchemaFactory.createForClass(User);
+export const reqFriend = SchemaFactory.createForClass(RequestFriend);
+export const room = SchemaFactory.createForClass(Room);
