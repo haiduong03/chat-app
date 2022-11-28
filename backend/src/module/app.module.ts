@@ -1,18 +1,17 @@
-import { reqFriend, userModel } from '../model/user.model';
+import { message, reqFriend, userModel } from '../model/user.model';
 import { Module } from '@nestjs/common';
 import { UserController } from '../controller/user.controller';
 import { UserService } from '../service/user.service';
 import { ChatGateway } from '../socket/chat.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Guard } from 'src/guard/token.guard';
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/chat-app' ||
-        'mongodb://localhost:27017/chat-app',
+      process.env.MONGODB_URL_1 || process.env.MONGODB_URL_2,
     ),
     MongooseModule.forFeature([
       {
@@ -23,8 +22,11 @@ import { Guard } from 'src/guard/token.guard';
         name: 'requestFriend',
         schema: reqFriend,
       },
+      {
+        name: 'message',
+        schema: message,
+      },
     ]),
-    ConfigModule.forRoot(),
     JwtModule.register({ secret: process.env.TOKEN_KEY }),
   ],
   controllers: [UserController],

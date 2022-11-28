@@ -1,15 +1,7 @@
-import { reqFriend } from './../model/user.model';
-import {
-  Body,
-  Controller,
-  Get,
-  NestMiddleware,
-  Param,
-  Post,
-} from '@nestjs/common';
-import { User, ReqFriend } from '../model/user.model';
-import { UserService } from '../service/user.service';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Guard } from '../guard/token.guard';
+import { ReqFriendDocument, User } from '../model/user.model';
+import { UserService } from '../service/user.service';
 // import { Request, Response, NextFunction } from 'express';
 
 @Controller('user')
@@ -63,13 +55,17 @@ export class UserController {
   }
 
   @Post('request-friend')
-  async requestFriend(@Body() req: ReqFriend) {
-    // const req = { from, to, status: 0 };
+  async requestFriend(@Body() req: ReqFriendDocument) {
     return await this.userService.requestFriend(req);
   }
 
-  @Post('add-friend/:from/:to')
-  async addFriend(@Param('from') from: string, @Param('to') to: string) {
-    return await this.userService.addFriend(from, to);
+  @Post('add-friend')
+  async addFriend(@Body() req: ReqFriendDocument) {
+    return await this.userService.addFriend(req);
+  }
+
+  @Post('reject-friend/:id')
+  async rejectFriend(@Param('id') id: string) {
+    return await this.userService.rejectFriend(id);
   }
 }

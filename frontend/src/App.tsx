@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const socket = io("http://localhost:81", {
+const socket = io("http://localhost:80", {
 	transports: ["websocket", "polling"],
 });
 
@@ -21,7 +21,7 @@ function App() {
 		</ul>
 	));
 
-	const send = async () => {
+	const send = () => {
 		const date = new Date();
 		const h = date.getHours();
 		const m = date.getMinutes();
@@ -35,7 +35,7 @@ function App() {
 					time: time,
 				};
 
-				await socket.emit("messageToServer", data);
+				socket.emit("messageToServer", data);
 			}
 		}
 	};

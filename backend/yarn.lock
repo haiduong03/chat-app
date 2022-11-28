@@ -1477,13 +1477,13 @@
     "multer" "1.4.4-lts.1"
     "tslib" "2.4.0"
 
-"@nestjs/platform-socket.io@^9.0.0", "@nestjs/platform-socket.io@^9.1.6":
-  "integrity" "sha512-h1cilQaVimA3HjlEQWXidAZ3apaooeH1RTL+yZRZ1Wa/FPybiJCgkfDm/9K0zaqWSBdSPiNYArjyaoW/G2PDLg=="
-  "resolved" "https://registry.npmjs.org/@nestjs/platform-socket.io/-/platform-socket.io-9.1.6.tgz"
-  "version" "9.1.6"
+"@nestjs/platform-socket.io@^9.0.0", "@nestjs/platform-socket.io@^9.2.0":
+  "integrity" "sha512-ttxXtqHV3Cpk5AfZOxfE8urILV5oLBpG21vdyqUHiL0YDuhHdc2tBz5GKSYAfsWefmVeQQiBAV9dqaa23Rf0nQ=="
+  "resolved" "https://registry.npmjs.org/@nestjs/platform-socket.io/-/platform-socket.io-9.2.0.tgz"
+  "version" "9.2.0"
   dependencies:
     "socket.io" "4.5.3"
-    "tslib" "2.4.0"
+    "tslib" "2.4.1"
 
 "@nestjs/schematics@^9.0.0", "@nestjs/schematics@^9.0.3":
   "integrity" "sha512-kZrU/lrpVd2cnK8I3ibDb3Wi1ppl3wX3U3lVWoL+DzRRoezWKkh8upEL4q0koKmuXnsmLiu3UPxFeMOrJV7TSA=="
@@ -1503,14 +1503,14 @@
   dependencies:
     "tslib" "2.4.0"
 
-"@nestjs/websockets@^9.0.0", "@nestjs/websockets@^9.1.6":
-  "integrity" "sha512-n6ldWU2FdVFESTj0ahmGLDEOT0sc3QKLya7N/L7dh8Z5F50gqd5Qw6LPmhRWcyXLGi+1Ugn1ZMnLn62B1CsZ7A=="
-  "resolved" "https://registry.npmjs.org/@nestjs/websockets/-/websockets-9.1.6.tgz"
-  "version" "9.1.6"
+"@nestjs/websockets@^9.0.0", "@nestjs/websockets@^9.2.0":
+  "integrity" "sha512-AbG4eN9p9O6QmNSOWsk0lrA+CtHkrdDkogcl1sGyTrg+LRd6IUlkaTu9fFK9Hl6o7bs2ieGgDmxAvl+Xd156Aw=="
+  "resolved" "https://registry.npmjs.org/@nestjs/websockets/-/websockets-9.2.0.tgz"
+  "version" "9.2.0"
   dependencies:
     "iterare" "1.2.1"
     "object-hash" "3.0.0"
-    "tslib" "2.4.0"
+    "tslib" "2.4.1"
 
 "@nodelib/fs.scandir@2.1.5":
   "integrity" "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
@@ -5889,6 +5889,11 @@
   "integrity" "sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
   "version" "2.4.0"
+
+"tslib@2.4.1":
+  "integrity" "sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA=="
+  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.4.1.tgz"
+  "version" "2.4.1"
 
 "tsutils@^3.21.0":
   "integrity" "sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA=="

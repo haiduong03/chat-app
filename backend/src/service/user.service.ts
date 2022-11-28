@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
-import { User, UserDocument, ReqFriend } from '../model/user.model';
+import { User, UserDocument, ReqFriendDocument } from '../model/user.model';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('user') private readonly userModel: Model<UserDocument>,
     @InjectModel('requestFriend')
-    private readonly reqFriend: Model<UserDocument>,
+    private readonly reqFriend: Model<ReqFriendDocument>,
   ) {}
 
   async createUser(user: User) {
@@ -67,7 +67,7 @@ export class UserService {
     }
   }
 
-  async requestFriend(req: ReqFriend) {
+  async requestFriend(req: ReqFriendDocument) {
     try {
       await new this.reqFriend(req).save();
       return { result: 'successful' };
@@ -84,17 +84,26 @@ export class UserService {
     }
   }
 
-  async addFriend(from: string, to: string) {
+  async addFriend(req: ReqFriendDocument) {
     try {
       // const fr = new Types.ObjectId(from);
       // const t = new Types.ObjectId(to);
-      await this.userModel.findByIdAndUpdate(to, { $push: { friend: from } });
-      await this.userModel.findByIdAndUpdate(from, { $push: { friend: to } });
-      await this.reqFriend.findOneAndUpdate({ from: from }, { status: 1 });
+      await this.userModel.findByIdAndUpdate(req.to, {
+        $push: { friend: req.from },
+      });
+      await this.userModel.findByIdAndUpdate(req.from, {
+        $push: { friend: req.to },
+      });
+      await this.reqFriend.findOneAndUpdate({ _id: req._id }, { status: 1 });
 
       return { result: 'successful' };
     } catch (err) {
       return err;
     }
+  }
+
+  async rejectFriend(id: string) {
+    await this.reqFriend.findOneAndUpdate({ _id: id }, { status: 1 });
+    return { result: 'successful' };
   }
 }

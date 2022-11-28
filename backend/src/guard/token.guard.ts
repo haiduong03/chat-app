@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 import { UserService } from 'src/service/user.service';
+import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
-export class Guard {
+export class Guard implements NestMiddleware {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
+  use(req: any, res: any, next: (error?: any) => void) {
+    throw new Error('Method not implemented.');
+  }
 
   async login(email: string, password: string) {
     try {
@@ -35,10 +39,17 @@ export class Guard {
     }
   }
 
-  // async validToken(token: string) {
-  //   const result = this.jwtService.verify(token);
-  //   if(result == true){
+  async validToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const header = req.headers.authorization;
+      const token = header.split(' ')[1];
 
-  //   }
-  // }
+      const result = await this.jwtService.verify(token);
+      if (result == true) {
+        next();
+      }
+    } catch (err) {
+      return err;
+    }
+  }
 }
