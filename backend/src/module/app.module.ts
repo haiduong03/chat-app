@@ -19,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
         schema: userModel,
       },
       {
-        name: 'requestFriend',
+        name: 'reqFriend',
         schema: reqFriend,
       },
       {

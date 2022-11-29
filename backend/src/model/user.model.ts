@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes, Types } from 'mongoose';
 
-export type UserDocument = User & Document;
-export type ReqFriendDocument = RequestFriend & Document;
-export type MessageDocument = Messages & Document;
+export type UserDoc = User & Document;
+export type ReqFriendDoc = RequestFriend & Document;
+export type MessageDoc = Messages & Document;
 
 @Schema({ timestamps: true })
 export class User {
@@ -43,12 +43,15 @@ export class RequestFriend {
   @Prop({ required: true })
   to: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: false })
   status: boolean;
 }
 
 @Schema()
 export class Room {
+  @Prop({ type: SchemaTypes.ObjectId })
+  id: Types.ObjectId;
+
   @Prop({ required: true })
   name: string;
 
@@ -56,10 +59,14 @@ export class Room {
   role?: string;
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Messages {
+  @Prop({ type: SchemaTypes.ObjectId })
+  id: Types.ObjectId;
+
   // @Prop({ required: true })
   // room: string;
+
   @Prop()
   sender: string;
 

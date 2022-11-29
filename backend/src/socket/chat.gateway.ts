@@ -5,24 +5,30 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { OnGatewayInit } from '@nestjs/websockets/interfaces';
+import {
+  OnGatewayConnection,
+  OnGatewayInit,
+} from '@nestjs/websockets/interfaces';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { Messages } from './../model/user.model';
 
 // @WebSocketGateway(+process.env.SOCKET_PORT)
 @WebSocketGateway(80)
-export class ChatGateway implements OnGatewayInit {
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(
     @InjectModel('message') private readonly message: Model<Messages>,
   ) {}
-
   @WebSocketServer() server: Server;
 
-  private logger: Logger = new Logger('ChatGateway');
+  @SubscribeMessage('connection')
+  handleConnection(client: Socket, user: string) {
+    this.server.emit('connected', `${user} joined`);
+    // throw new Error('Method not implemented.');
+  }
 
   afterInit() {
-    this.logger.log('Initialized!');
+    console.log('Initialized!');
   }
 
   @SubscribeMessage('typing')

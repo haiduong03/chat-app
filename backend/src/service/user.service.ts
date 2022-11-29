@@ -2,14 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
-import { User, UserDocument, ReqFriendDocument } from '../model/user.model';
+import {
+  MessageDoc,
+  ReqFriendDoc,
+  RequestFriend,
+  User,
+  UserDoc,
+} from '../model/user.model';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('user') private readonly userModel: Model<UserDocument>,
-    @InjectModel('requestFriend')
-    private readonly reqFriend: Model<ReqFriendDocument>,
+    @InjectModel('user') private readonly userModel: Model<UserDoc>,
+    @InjectModel('reqFriend')
+    private readonly reqFriend: Model<ReqFriendDoc>,
+    @InjectModel('message') private readonly message: Model<MessageDoc>,
   ) {}
 
   async createUser(user: User) {
@@ -26,7 +33,7 @@ export class UserService {
     }
   }
 
-  async listUser() {
+  async allUser() {
     try {
       return await this.userModel.find();
     } catch (err) {
@@ -67,7 +74,7 @@ export class UserService {
     }
   }
 
-  async requestFriend(req: ReqFriendDocument) {
+  async requestFriend(req: RequestFriend) {
     try {
       await new this.reqFriend(req).save();
       return { result: 'successful' };
@@ -76,25 +83,31 @@ export class UserService {
     }
   }
 
-  async listRequestFriend() {
+  async listRequestFriend(id: string) {
     try {
-      return await this.reqFriend.find();
+      return await this.reqFriend.find({ to: id, status: false });
     } catch (err) {
       return err;
     }
   }
 
-  async addFriend(req: ReqFriendDocument) {
+  async listRequestFriendById(id: string) {
     try {
-      // const fr = new Types.ObjectId(from);
-      // const t = new Types.ObjectId(to);
+      return await this.reqFriend.findOne({ to: id });
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async addFriend(req: RequestFriend) {
+    try {
       await this.userModel.findByIdAndUpdate(req.to, {
         $push: { friend: req.from },
       });
       await this.userModel.findByIdAndUpdate(req.from, {
         $push: { friend: req.to },
       });
-      await this.reqFriend.findOneAndUpdate({ _id: req._id }, { status: 1 });
+      await this.reqFriend.findOneAndUpdate({ _id: req.id }, { status: 1 });
 
       return { result: 'successful' };
     } catch (err) {
@@ -103,7 +116,19 @@ export class UserService {
   }
 
   async rejectFriend(id: string) {
-    await this.reqFriend.findOneAndUpdate({ _id: id }, { status: 1 });
-    return { result: 'successful' };
+    try {
+      await this.reqFriend.findOneAndUpdate({ _id: id }, { status: 1 });
+      return { result: 'successful' };
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async allMessage() {
+    try {
+      return await this.message.find().sort({ createdAt: -1 }).limit(20);
+    } catch (err) {
+      return err;
+    }
   }
 }

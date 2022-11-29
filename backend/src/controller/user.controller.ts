@@ -1,20 +1,14 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Guard } from '../guard/token.guard';
-import { ReqFriendDocument, User } from '../model/user.model';
+import { RequestFriend, User } from '../model/user.model';
 import { UserService } from '../service/user.service';
-// import { Request, Response, NextFunction } from 'express';
 
 @Controller('user')
 export class UserController {
-  //  implements NestMiddleware {
   constructor(
     private readonly userService: UserService,
     private readonly guard: Guard,
   ) {}
-
-  // use(req: any, res: any, next: (error?: any) => void) {
-  //   throw new Error('Method not implemented.');
-  // }
 
   @Post('login')
   async login(
@@ -29,9 +23,9 @@ export class UserController {
     return await this.userService.createUser(user);
   }
 
-  @Get('list-user')
-  async listUser() {
-    return await this.userService.listUser();
+  @Get('all-user')
+  async allUser() {
+    return await this.userService.allUser();
   }
 
   @Get('find-user-by-id/:id')
@@ -49,23 +43,33 @@ export class UserController {
     return await this.userService.updateUser(id, user);
   }
 
-  @Get('list-request-friend')
-  async listRequestFriend() {
-    return await this.userService.listRequestFriend();
+  @Get('list-request-friend/:id')
+  async listRequestFriend(@Param('id') id: string) {
+    return await this.userService.listRequestFriend(id);
+  }
+
+  @Get('list-request-friend-by-id/:id')
+  async listRequestFriendById(@Param('id') id: string) {
+    return await this.userService.listRequestFriendById(id);
   }
 
   @Post('request-friend')
-  async requestFriend(@Body() req: ReqFriendDocument) {
+  async requestFriend(@Body() req: RequestFriend) {
     return await this.userService.requestFriend(req);
   }
 
   @Post('add-friend')
-  async addFriend(@Body() req: ReqFriendDocument) {
+  async addFriend(@Body() req: RequestFriend) {
     return await this.userService.addFriend(req);
   }
 
   @Post('reject-friend/:id')
   async rejectFriend(@Param('id') id: string) {
     return await this.userService.rejectFriend(id);
+  }
+
+  @Get('all-message')
+  async allMessage() {
+    return await this.userService.allMessage();
   }
 }
