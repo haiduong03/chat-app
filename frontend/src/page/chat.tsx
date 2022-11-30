@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import "../css/Chat.css";
+import "../css/chat.css";
 import axios from "axios";
-
+import { Button, Form } from "antd";
 const socket = io("http://localhost:80", {
 	transports: ["websocket", "polling"],
 });
-
+async function getName() {
+	const result = await axios.get(
+		`http://localhost:3001/user/find-user-by-email/${}`,
+	);
+	const person = result.data;
+}
 function Chat() {
 	const [text, setText] = useState<string>("");
-	const [person, setPerson] = useState<string>("");
-	const [check, setCheck] = useState<boolean>(false);
+
 	const [messages, setMessages] = useState<any[]>([]);
 	const listRef = useRef<HTMLUListElement | any>(null);
 
@@ -29,23 +33,22 @@ function Chat() {
 		const h = date.getHours();
 		const m = date.getMinutes();
 		const time = h + ":" + m;
-		if (!person || person.trim().length < 0) alert("Please enter your name");
-		else {
-			if (text.trim().length > 0) {
-				const data = {
-					sender: person,
-					message: text,
-					time: time,
-				};
-				// socket.emit("connection", person);
-				socket.emit("messageToServer", data);
-			}
+		// if (!person || person.trim().length < 0) alert("Please enter your name");
+		// else {
+		if (text.trim().length > 0) {
+			const data = {
+				sender: person,
+				message: text,
+				time: time,
+			};
+			// socket.emit("connection", person);
+			socket.emit("messageToServer", data);
 		}
+		// }
 	};
 
 	useState(async () => {
-		// socket.on("connected", (human) => {});
-		const result = await axios.get("http://localhost:3000/user/all-message");
+		const result = await axios.get("http://localhost:3001/user/all-message");
 		setMessages(messages.concat(result.data.reverse()));
 	});
 
@@ -57,42 +60,25 @@ function Chat() {
 	}, [messages]);
 
 	return (
-		<div>
-			{/* <div>
-				Room: <b>Testing</b>{" "}
-			</div> */}
+		<div className="container">
 			<div id="messages" ref={listRef}>
 				{result}
 			</div>
-			<div>
-				Name: &emsp; {person}
-				{!check && (
-					<div>
-						Enter name: &emsp;
-						<input
-							type="text"
-							value={person}
-							onChange={(e) => {
-								setPerson(e.target.value);
-							}}
-							onBlur={() => {
-								if (person) setCheck(true);
-							}}
-						/>
-					</div>
-				)}
-			</div>
+			<div className="container">Name:{person}</div>
 			<div>
 				<textarea
+					className="textarea"
 					id="text"
 					value={text}
 					onChange={(e) => {
 						setText(e.target.value);
 					}}
 				></textarea>
-				<div>
-					<button onClick={send}>Submit</button>
-				</div>
+				<Form.Item className="form-register">
+					<Button type="primary" className="bunton" onClick={send}>
+						Submit
+					</Button>
+				</Form.Item>
 			</div>
 		</div>
 	);

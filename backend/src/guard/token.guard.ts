@@ -33,7 +33,7 @@ export class Guard implements NestMiddleware {
         }
       }
 
-      return { result: 'access denied' };
+      return { result: 'Please try again !!' };
     } catch (err) {
       return err;
     }

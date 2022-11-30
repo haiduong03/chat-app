@@ -1,8 +1,6 @@
-// import Login from "./page/login";
-import Register from "./page/register";
+import Route from "./page/route";
 
 function App() {
-	// return <Login></Login>;
-	return <Register></Register>;
+	return <Route />;
 }
 export default App;
