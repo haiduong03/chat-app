@@ -27,9 +27,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
     // throw new Error('Method not implemented.');
   }
 
-  afterInit() {
-    console.log('Initialized!');
-  }
+  afterInit() {}
 
   @SubscribeMessage('typing')
   handleTyping(client: Socket, sender: string) {
@@ -40,7 +38,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
   handleMessage(client: Socket, data: Messages) {
     // const message = new essage();
     this.server.emit('messageToClient', data);
-
     return new this.message(data).save();
   }
 }

@@ -1,6 +1,5 @@
 import { Button, Form, Input, notification } from "antd";
 import axios from "axios";
-import "../css/form.css";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -13,18 +12,20 @@ function Login() {
 		if (result.data.token) {
 			notification.success({
 				placement: "top",
-				message: "Register",
-				description: `Login success !!!`,
+				message: "Login success !!!",
 			});
 			localStorage.setItem("token", result.data.token);
 			localStorage.setItem("email", user.email);
 			navigate("/chat");
 		} else
-			notification.success({
+			notification.warning({
 				placement: "top",
-				message: "Register",
+				message: "Login failed",
 				description: `${result.data.result}`,
 			});
+	};
+	const register = () => {
+		navigate("/register");
 	};
 
 	return (
@@ -61,8 +62,11 @@ function Login() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button type="primary" htmlType="submit">
+				<Button className="button" type="primary" htmlType="submit">
 					Login
+				</Button>
+				<Button className="button" type="primary" onClick={register}>
+					Register
 				</Button>
 			</Form.Item>
 		</Form>

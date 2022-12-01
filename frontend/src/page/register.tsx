@@ -1,32 +1,35 @@
 import { Button, Form, Input, notification } from "antd";
 import axios from "axios";
-import "../css/form.css";
-
-const createUser = async (user: any) => {
-	const result = await axios.post("http://localhost:3001/user/create-user", {
-		email: user.email,
-		phone: user.phone,
-		name: user.name,
-		password: user.password,
-	});
-	if (result.data.result)
-		notification.success({
-			placement: "top",
-			message: "Register",
-			description: `Created ${result.data.result}`,
-		});
-	//link to login page
-	else
-		notification.success({
-			placement: "top",
-			message: "Register",
-			description: `${JSON.stringify(
-				result.data.keyValue.email || result.data.keyValue.name,
-			)} already exists`,
-		});
-};
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+	const navigate = useNavigate();
+	const createUser = async (user: any) => {
+		const result = await axios.post("http://localhost:3001/user/create-user", {
+			email: user.email,
+			phone: user.phone,
+			name: user.name,
+			password: user.password,
+		});
+		if (result.data.result) {
+			notification.success({
+				placement: "top",
+				message: "Register",
+				description: `Created ${result.data.result}`,
+			});
+			navigate("/");
+		} else
+			notification.warning({
+				placement: "top",
+				message: "Register",
+				description: `${JSON.stringify(
+					result.data.keyValue.email || result.data.keyValue.name,
+				)} already exists`,
+			});
+	};
+	const login = () => {
+		navigate("/");
+	};
 	return (
 		<Form
 			name="basic"
@@ -103,8 +106,16 @@ function Register() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button type="primary" htmlType="submit">
+				<Button className="button" type="primary" htmlType="submit">
 					Register
+				</Button>
+				<Button
+					className="button"
+					type="primary"
+					htmlType="submit"
+					onClick={login}
+				>
+					Login
 				</Button>
 			</Form.Item>
 		</Form>
