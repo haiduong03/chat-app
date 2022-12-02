@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { genSaltSync, hashSync } from 'bcryptjs';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
 import {
   MessageDoc,
@@ -17,6 +18,7 @@ export class UserService {
     @InjectModel('reqFriend')
     private readonly reqFriend: Model<ReqFriendDoc>,
     @InjectModel('message') private readonly message: Model<MessageDoc>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async createUser(user: User) {
@@ -27,7 +29,7 @@ export class UserService {
 
       await new this.userModel(user).save();
 
-      return { result: 'successful' };
+      return { result: 'Successful' };
     } catch (err) {
       return err;
     }
@@ -68,7 +70,7 @@ export class UserService {
   async updateUser(id: string, user: User) {
     try {
       await this.userModel.findByIdAndUpdate(id, user);
-      return { result: 'successful' };
+      return { result: 'Successful' };
     } catch (err) {
       return err;
     }
@@ -77,7 +79,7 @@ export class UserService {
   async requestFriend(req: RequestFriend) {
     try {
       await new this.reqFriend(req).save();
-      return { result: 'successful' };
+      return { result: 'Successful' };
     } catch (err) {
       return err;
     }
@@ -109,7 +111,7 @@ export class UserService {
       });
       await this.reqFriend.findOneAndUpdate({ _id: req.id }, { status: 1 });
 
-      return { result: 'successful' };
+      return { result: 'Successful' };
     } catch (err) {
       return err;
     }
@@ -118,7 +120,7 @@ export class UserService {
   async rejectFriend(id: string) {
     try {
       await this.reqFriend.findOneAndUpdate({ _id: id }, { status: 1 });
-      return { result: 'successful' };
+      return { result: 'Successful' };
     } catch (err) {
       return err;
     }
@@ -127,6 +129,30 @@ export class UserService {
   async allMessage() {
     try {
       return await this.message.find().sort({ createdAt: -1 }).limit(20);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async login(email: string, password: string) {
+    try {
+      const user = await this.findUserByEmail(email);
+
+      if (user) {
+        const compare = compareSync(
+          password.toString(),
+          user.password.toString(),
+        );
+        if (compare == true) {
+          const token = this.jwtService.sign({
+            id: user._id,
+            name: user.name,
+          });
+          return { token };
+        }
+      }
+
+      return { result: 'Wrong user name or password !!!' };
     } catch (err) {
       return err;
     }

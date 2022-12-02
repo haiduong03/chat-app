@@ -1,12 +1,17 @@
-import { message, reqFriend, userModel } from '../model/user.model';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TokenMiddleware } from 'src/middleware/token.middleware';
 import { UserController } from '../controller/user.controller';
+import { message, reqFriend, userModel } from '../model/user.model';
 import { UserService } from '../service/user.service';
 import { ChatGateway } from '../socket/chat.gateway';
-import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
-import { Guard } from 'src/guard/token.guard';
-import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -30,6 +35,16 @@ import { ConfigModule } from '@nestjs/config';
     JwtModule.register({ secret: process.env.TOKEN_KEY }),
   ],
   controllers: [UserController],
-  providers: [UserService, ChatGateway, Guard],
+  providers: [UserService, ChatGateway],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TokenMiddleware)
+      .exclude(
+        { path: 'user/login', method: RequestMethod.POST },
+        { path: 'user/create-user', method: RequestMethod.POST },
+      )
+      .forRoutes(UserController);
+  }
+}

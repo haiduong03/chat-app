@@ -1,21 +1,17 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Guard } from '../guard/token.guard';
 import { RequestFriend, User } from '../model/user.model';
 import { UserService } from '../service/user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly guard: Guard,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post('login')
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    return await this.guard.login(email, password);
+    return await this.userService.login(email, password);
   }
 
   @Post('create-user')
