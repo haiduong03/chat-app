@@ -37,8 +37,9 @@ sup {
 }
 
 .human {
-	margin-left: 20px;
-	margin-right: 2.5%;
+	margin-left: 0.5%;
+	margin-right: 3%;
+	/* padding: auto; */
 	display: flex;
 	flex-direction: column;
 	/* display: inline-block; */
@@ -52,16 +53,18 @@ sup {
 	overflow-y: scroll;
 	border-radius: 20px;
 	font-size: 20px;
+	margin: auto;
 }
 
 .textarea {
 	border: 3px;
 	border-style: solid;
 	width: 100%;
-	height: 100px;
+	height: 100%;
 	border-radius: 20px;
-	text-align: center;
+	text-align: left;
 	font-size: 20px;
+	padding: 11px;
 }
 
 .form-register {
@@ -107,6 +110,21 @@ sup {
 	text-align: center;
 	font-size: 15px;
 	font-weight: bold;
-	max-height: 10px;
-	line-height: 1px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.sender,
+.receiver {
+	width: auto;
+}
+
+.sender {
+	margin-left: auto;
+	font-weight: normal;
+}
+
+.receiver {
+	margin-right: auto;
+	font-weight: normal;
 }

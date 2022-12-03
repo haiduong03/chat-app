@@ -49,10 +49,10 @@ export class UserController {
     return await this.userService.listRequestFriend(id);
   }
 
-  @Get('list-request-friend-by-id/:id')
-  async listRequestFriendById(@Param('id') id: string) {
-    return await this.userService.listRequestFriendById(id);
-  }
+  // @Get('list-request-friend-by-id/:id')
+  // async listRequestFriendById(@Param('id') id: string) {
+  //   return await this.userService.listRequestFriendById(id);
+  // }
 
   @Post('request-friend')
   async requestFriend(@Body() req: RequestFriend) {

@@ -1,65 +1,77 @@
-import { Button, Dropdown, Form, Menu, Space } from "antd";
+import { Button, Form, notification, Popover, Space } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
-
+import { v4 as uuidv4 } from "uuid";
 const socket = io("http://localhost:80", {
 	transports: ["websocket", "polling"],
 });
 
 function Chat() {
+	const token = localStorage.getItem("token");
 	const navigate = useNavigate();
-	const logout = () => {
+	const logOut = () => {
 		localStorage.clear();
+		notification.info({
+			placement: "top",
+			message: "Logout success !!!",
+		});
 		navigate("/");
 	};
-	const menu1 = (
-		<Menu
-			items={[
-				{
-					key: "1",
-					label: (
-						<p className="hover" onClick={logout}>
-							Log out
-						</p>
-					),
+
+	const findGuest = async (name: string) => {
+		return await axios.get(
+			`http://localhost:3001/user/find-user-by-name/${name}`,
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Content-type": "Application/json",
+					Authorization: `Bearer ${token}`,
 				},
-			]}
-		/>
+			},
+		);
+	};
+
+	const infor = async (name: string) => {
+		const result = await findGuest(name);
+		navigate(`/information/${result.data._id}`);
+	};
+
+	const addFriend = async (name: string) => {
+		const result = await findGuest(name);
+		console.log(result.data._id);
+	};
+
+	// const items: MenuProps["items"] = [
+	// 	{
+	// 		key: "1",
+	// 		label: (
+	// 			<div className="hover" onClick={logOut}>
+	// 				Log out
+	// 			</div>
+	// 		),
+	// 	},
+	// ];
+
+	const logout = (
+		<div className="hover" onClick={logOut}>
+			Log out
+		</div>
 	);
-	const menu2 = (
-		<Menu
-			items={[
-				{
-					key: "1",
-					label: (
-						<p
-							className="hover"
-							// onClick={() => {
-							// 	navigate(`infor/${id}`);
-							// }}
-						>
-							Information
-						</p>
-					),
-				},
-				{
-					key: "2",
-					label: (
-						<p
-							className="hover"
-							// onClick={() => {
-							// 	navigate(`infor/${id}`);
-							// }}
-						>
-							Add friend
-						</p>
-					),
-				},
-			]}
-		/>
-	);
+
+	const guestData = (name: string) => {
+		return [
+			<div key={uuidv4()}>
+				<p className="hover" onClick={() => infor(name)}>
+					Information
+				</p>
+				<p className="hover" onClick={() => addFriend(name)}>
+					Add friend
+				</p>
+			</div>,
+		];
+	};
 
 	const [text, setText] = useState<string>("");
 	const [name, setName] = useState<string>("");
@@ -70,26 +82,26 @@ function Chat() {
 		if (data.sender === name) {
 			return (
 				<ul className="human" key={index}>
-					<p className="input"> Me</p>
-					<p>{data.message}</p>
+					<div className="input sender">
+						<Space>You</Space>
+					</div>
+					<div className="textarea sender">{data.message}</div>
 					<ul>
-						<sup>{data.time}</sup>
+						<sup className="receiver">{data.time}</sup>
 					</ul>
 				</ul>
 			);
 		}
 		return (
 			<ul className="human" key={index}>
-				<p className="input">
-					<Dropdown overlay={menu2}>
-						<a onClick={(e) => e.preventDefault()}>
-							<Space>{data.sender}</Space>
-						</a>
-					</Dropdown>
-				</p>
-				<p>{data.message}</p>
+				<div className="input receiver">
+					<Popover placement="bottom" content={guestData(data.sender)}>
+						<Space>{data.sender}</Space>
+					</Popover>
+				</div>
+				<div className="textarea receiver">{data.message}</div>
 				<ul>
-					<sup>{data.time}</sup>
+					<sup className="sender">{data.time}</sup>
 				</ul>
 			</ul>
 		);
@@ -112,16 +124,29 @@ function Chat() {
 	};
 
 	useState(async () => {
-		// const token = localStorage.getItem("token");
-		const email = localStorage.getItem("email");
-
 		const getMessage = await axios.get(
 			"http://localhost:3001/user/all-message",
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Content-type": "Application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			},
 		);
+
 		setMessages(messages.concat(getMessage.data.reverse()));
 
+		const email = localStorage.getItem("email");
 		const getName = await axios.get(
 			`http://localhost:3001/user/find-user-by-email/${email}`,
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Content-type": "Application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			},
 		);
 		setName(getName.data.name);
 	});
@@ -140,11 +165,14 @@ function Chat() {
 			</div>
 			<div className="input">
 				Name:
-				<Dropdown overlay={menu1}>
-					<a onClick={(e) => e.preventDefault()}>
-						<Space>{name}</Space>
-					</a>
-				</Dropdown>
+				<Popover placement="bottom" content={logout}>
+					<Space>{name}</Space>
+				</Popover>
+				{/* <Dropdown menu={{ items }}>
+					<div onClick={(e) => e.preventDefault()}>
+						<Space>Hover me</Space>
+					</div>
+				</Dropdown> */}
 			</div>
 			<div className="container">
 				<textarea
@@ -164,5 +192,4 @@ function Chat() {
 		</div>
 	);
 }
-
 export default Chat;
