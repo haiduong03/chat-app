@@ -3,21 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
-import {
-  MessageDoc,
-  ReqFriendDoc,
-  RequestFriend,
-  User,
-  UserDoc,
-} from '../model/user.model';
+import { Messages, RequestFriend, User } from '../model/user.model';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('user') private readonly userModel: Model<UserDoc>,
+    @InjectModel('user') private readonly userModel: Model<User>,
     @InjectModel('reqFriend')
-    private readonly reqFriend: Model<ReqFriendDoc>,
-    @InjectModel('message') private readonly message: Model<MessageDoc>,
+    private readonly reqFriend: Model<RequestFriend>,
+    @InjectModel('message') private readonly message: Model<Messages>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -85,15 +79,23 @@ export class UserService {
     }
   }
 
-  async listRequestFriend(id: string) {
+  async listReceiveRequestFriend(name: string) {
     try {
-      return await this.reqFriend.find({ to: id, status: false });
+      return await this.reqFriend.find({ to: name, status: false });
     } catch (err) {
       return err;
     }
   }
 
-  async listRequestFriendById(id: string) {
+  async listSendRequestFriend(name: string) {
+    try {
+      return await this.reqFriend.find({ from: name, status: false });
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async findRequestFriendById(id: string) {
     try {
       return await this.reqFriend.findOne({ to: id });
     } catch (err) {

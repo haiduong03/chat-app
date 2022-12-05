@@ -28,6 +28,14 @@ code {
 	/* max-height: 1000px; */
 }
 
+.table {
+	height: 500px;
+	display: flex;
+}
+.custom-scroll {
+	height: 500px;
+	overflow-y: scroll;
+}
 h2 {
 	text-align: center;
 }
@@ -71,8 +79,8 @@ sup {
 	margin-left: 20%;
 	margin-right: 20%;
 	margin-top: 100px;
-	border: 5px;
-	border-style: groove solid;
+	/* border: 5px;
+	border-style: groove solid; */
 	min-height: 100px;
 	display: flex;
 	flex-direction: column;
@@ -98,12 +106,17 @@ sup {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.button {
-	font-size: 20px;
+.button-cancel {
+	background-color: red;
+	/* font-size: 20px;
 	max-height: 10px;
 	line-height: 1px;
 	padding: 20px;
-	margin: 10px 0px 10px 10px;
+	margin: 10px 0px 10px 10px; */
+}
+
+.button-accept {
+	background-color: greenyellow;
 }
 
 .hover {

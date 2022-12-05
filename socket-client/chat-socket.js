@@ -1,7 +1,7 @@
-const person = prompt("Please enter your name");
-document.getElementById("name").innerHTML = person;
+// const person = prompt("Please enter your name");
+// document.getElementById("name").innerHTML = person;
 const messages = document.getElementById("messages");
-const socket = io("http://localhost:81", {
+const socket = io("http://localhost:80", {
 	transports: ["websocket", "polling", "flashsocket"],
 });
 
@@ -91,16 +91,16 @@ const socket = io("http://localhost:81", {
 
 const createRoom = () => {
 	const room = document.getElementById("room").value.toString();
-	socket.emit("createRoom", { room });
+	socket.emit("create-room", { room });
 };
 
 const joinRoom = () => {
 	const room = document.getElementById("room").value.toString();
-	socket.emit("joinRoom", { room });
+	socket.emit("join-room", { room });
 };
-const listRoom = () => {
-	socket.on("listDoom");
-};
+// const listRoom = () => {
+// 	socket.on("listDoom");
+// };
 const handleSubmitNewMessage = async () => {
 	// const Room = document.getElementById("room").value;
 
@@ -113,40 +113,19 @@ const handleSubmitNewMessage = async () => {
 
 	// const file = document.getElementById("file");
 	if (text.length > 0) {
-		await socket.emit("messageToServer", {
-			sender: person,
+		await socket.emit("send-to-room", {
 			room: room,
 			// 		file: file,
 			message: text,
 			time: time,
+			room: room,
 		});
 	}
 };
 
-socket.on("messageToClient", async (data) => {
-	// const human = document.createElement("h3");
-	// const setName = document.createTextNode(data.sender);
-	// human.appendChild(setName);
-
-	// const text = document.createElement("li");
-	// const setText = document.createTextNode(data.message);
-	// text.appendChild(setText);
-
-	// const time = document.createElement("sup");
-	// const setTime = document.createTextNode(data.time);
-	// time.appendChild(setTime);
-
-	// const a = document.createElement("ul");
-	// a.appendChild(human);
-	// a.appendChild(text);
-	// a.appendChild(time);
-
-	// const b = document.getElementById("messages");
-	// b.appendChild(a);
-	// b.scrollIntoView(false);
-	// b.scrollTop = b.scrollHeight;
-	console.log(data);
-});
+socket.on("joined-room", async (data) => { console.log({ data: data }) });
+socket.on("receive-from-room", async (data) => { console.log({ data: data }) });
+socket.on("created-room", async (data) => { console.log({ data: data }) });
 
 // socket.on("connected", async (data) => {
 // 	console.log(data);

@@ -44,15 +44,20 @@ export class UserController {
     return await this.userService.updateUser(id, user);
   }
 
-  @Get('list-request-friend/:id')
-  async listRequestFriend(@Param('id') id: string) {
-    return await this.userService.listRequestFriend(id);
+  @Get('list-receive-request-friend/:name')
+  async listReceiveRequestFriend(@Param('name') name: string) {
+    return await this.userService.listReceiveRequestFriend(name);
   }
 
-  // @Get('list-request-friend-by-id/:id')
-  // async listRequestFriendById(@Param('id') id: string) {
-  //   return await this.userService.listRequestFriendById(id);
-  // }
+  @Get('list-send-request-friend/:name')
+  async listSendRequestFriend(@Param('name') name: string) {
+    return await this.userService.listSendRequestFriend(name);
+  }
+
+  @Get('find-request-friend-by-id/:id')
+  async findRequestFriendById(@Param('id') id: string) {
+    return await this.userService.findRequestFriendById(id);
+  }
 
   @Post('request-friend')
   async requestFriend(@Body() req: RequestFriend) {

@@ -62,10 +62,10 @@ function Login() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button className="button" type="primary" htmlType="submit">
+				<Button className="input hover" type="primary" htmlType="submit">
 					Login
 				</Button>
-				<Button className="button" type="primary" onClick={register}>
+				<Button className="input hover" type="primary" onClick={register}>
 					Register
 				</Button>
 			</Form.Item>

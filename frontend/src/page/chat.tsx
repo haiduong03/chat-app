@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+
 const socket = io("http://localhost:80", {
 	transports: ["websocket", "polling"],
 });
@@ -11,6 +12,11 @@ const socket = io("http://localhost:80", {
 function Chat() {
 	const token = localStorage.getItem("token");
 	const navigate = useNavigate();
+	const [text, setText] = useState<string>("");
+	const [name, setName] = useState<string>("");
+	const [messages, setMessages] = useState<any[string]>([]);
+	const listRef = useRef<HTMLUListElement | any>(null);
+
 	const logOut = () => {
 		localStorage.clear();
 		notification.info({
@@ -23,6 +29,7 @@ function Chat() {
 	const findGuest = async (name: string) => {
 		return await axios.get(
 			`http://localhost:3001/user/find-user-by-name/${name}`,
+
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
@@ -38,45 +45,62 @@ function Chat() {
 		navigate(`/information/${result.data._id}`);
 	};
 
-	const addFriend = async (name: string) => {
-		const result = await findGuest(name);
-		console.log(result.data._id);
+	const addFriend = async (guestName: string) => {
+		const guest = await findGuest(guestName);
+		const guestID = guest.data.name;
+		const user = await findGuest(name);
+		const userID = user.data.name;
+		const result = await axios.post(
+			"http://localhost:3001/user/request-friend",
+			{ from: userID, to: guestID },
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Content-type": "Application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+		if (result.data.result)
+			notification.success({
+				placement: "top",
+				message: "Add friend",
+				description: "Request successful",
+			});
 	};
 
-	// const items: MenuProps["items"] = [
-	// 	{
-	// 		key: "1",
-	// 		label: (
-	// 			<div className="hover" onClick={logOut}>
-	// 				Log out
-	// 			</div>
-	// 		),
-	// 	},
-	// ];
+	const chat = async (name: string) => {
+		const result = await findGuest(name);
+
+		navigate(`/chat/${result.data._id}`);
+	};
 
 	const logout = (
-		<div className="hover" onClick={logOut}>
-			Log out
+		<div>
+			<Button className="input hover" onClick={() => infor(name)}>
+				About
+			</Button>
+			<Button className="input hover" onClick={logOut}>
+				Log out
+			</Button>
 		</div>
 	);
 
 	const guestData = (name: string) => {
 		return [
 			<div key={uuidv4()}>
-				<p className="hover" onClick={() => infor(name)}>
+				<Button className="input hover" onClick={() => infor(name)}>
 					Information
-				</p>
-				<p className="hover" onClick={() => addFriend(name)}>
+				</Button>
+				<Button className="input hover" onClick={() => chat(name)}>
+					Chat
+				</Button>
+				<Button className="input hover" onClick={() => addFriend(name)}>
 					Add friend
-				</p>
+				</Button>
 			</div>,
 		];
 	};
-
-	const [text, setText] = useState<string>("");
-	const [name, setName] = useState<string>("");
-	const [messages, setMessages] = useState<any[string]>([]);
-	const listRef = useRef<HTMLUListElement | any>(null);
 
 	const listMessage = messages.map((data: any, index: any) => {
 		if (data.sender === name) {
@@ -119,7 +143,7 @@ function Chat() {
 				message: texts,
 				time: time,
 			};
-			socket.emit("messageToServer", data);
+			socket.emit("send", data);
 		}
 	};
 
@@ -134,11 +158,10 @@ function Chat() {
 				},
 			},
 		);
-
 		setMessages(messages.concat(getMessage.data.reverse()));
 
 		const email = localStorage.getItem("email");
-		const getName = await axios.get(
+		const result = await axios.get(
 			`http://localhost:3001/user/find-user-by-email/${email}`,
 			{
 				headers: {
@@ -148,11 +171,11 @@ function Chat() {
 				},
 			},
 		);
-		setName(getName.data.name);
+		setName(result.data.name);
 	});
 
 	useEffect(() => {
-		socket.on("messageToClient", (data) => {
+		socket.on("receive", (data) => {
 			setMessages(messages.concat([data]));
 		});
 		listRef.current?.lastElementChild?.scrollIntoView();
@@ -168,11 +191,6 @@ function Chat() {
 				<Popover placement="bottom" content={logout}>
 					<Space>{name}</Space>
 				</Popover>
-				{/* <Dropdown menu={{ items }}>
-					<div onClick={(e) => e.preventDefault()}>
-						<Space>Hover me</Space>
-					</div>
-				</Dropdown> */}
 			</div>
 			<div className="container">
 				<textarea
@@ -184,7 +202,7 @@ function Chat() {
 					placeholder="Write a message..."
 				></textarea>
 				<Form.Item className="input">
-					<Button className="button" type="primary" onClick={send}>
+					<Button className="input hover" type="primary" onClick={send}>
 						Send
 					</Button>
 				</Form.Item>
