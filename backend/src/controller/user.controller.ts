@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { RequestFriend, User } from '../model/user.model';
+import { RequestFriend, Room, User } from '../model/user.model';
 import { UserService } from '../service/user.service';
 
 @Controller('user')
@@ -74,8 +74,13 @@ export class UserController {
     return await this.userService.rejectFriend(id);
   }
 
-  @Get('all-message')
-  async allMessage() {
-    return await this.userService.allMessage();
+  @Get('all-message/:name')
+  async allMessage(@Param('name') name: string) {
+    return await this.userService.allMessage(name);
+  }
+
+  @Get('all-room/:name')
+  async allRoom(@Param('name') name: string) {
+    return await this.userService.allRoom(name);
   }
 }

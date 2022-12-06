@@ -1,7 +1,7 @@
 import { Button, Form, notification, Popover, Space } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,6 +11,7 @@ const socket = io("http://localhost:80", {
 
 function Chat() {
 	const token = localStorage.getItem("token");
+	const room = useParams();
 	const navigate = useNavigate();
 	const [text, setText] = useState<string>("");
 	const [name, setName] = useState<string>("");
@@ -71,7 +72,6 @@ function Chat() {
 
 	const chat = async (name: string) => {
 		const result = await findGuest(name);
-
 		navigate(`/chat/${result.data._id}`);
 	};
 
@@ -141,6 +141,7 @@ function Chat() {
 			const data = {
 				sender: name,
 				message: texts,
+				to: room,
 				time: time,
 			};
 			socket.emit("send", data);
@@ -149,7 +150,7 @@ function Chat() {
 
 	useState(async () => {
 		const getMessage = await axios.get(
-			"http://localhost:3001/user/all-message",
+			`http://localhost:3001/user/all-message/${room}`,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",

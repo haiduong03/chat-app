@@ -10,8 +10,7 @@ export default function App() {
 			<Routes>
 				<Route index element={<Login />} />
 				<Route path="/register" element={<Register />} />
-				<Route path="/chat" element={<Chat />} />
-				{/* <Route path="/chat/:id" element={<Chat />} /> */}
+				<Route path="/chat/:name" element={<Chat />} />
 				<Route path="/room" element={<Room />} />
 				<Route path="/information/:id" element={<Register />} />
 			</Routes>

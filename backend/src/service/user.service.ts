@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
-import { Messages, RequestFriend, User } from '../model/user.model';
+import { Messages, RequestFriend, Room, User } from '../model/user.model';
 
 @Injectable()
 export class UserService {
@@ -12,6 +12,7 @@ export class UserService {
     @InjectModel('reqFriend')
     private readonly reqFriend: Model<RequestFriend>,
     @InjectModel('message') private readonly message: Model<Messages>,
+    @InjectModel('room') private readonly room: Model<Room>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -128,9 +129,20 @@ export class UserService {
     }
   }
 
-  async allMessage() {
+  async allMessage(room: string) {
     try {
-      return await this.message.find().sort({ createdAt: -1 }).limit(20);
+      return await this.message
+        .findOne({ to: room })
+        .sort({ createdAt: -1 })
+        .limit(20);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async allRoom(email: string) {
+    try {
+      return await this.room.findOne({ email: email });
     } catch (err) {
       return err;
     }

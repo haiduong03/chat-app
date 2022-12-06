@@ -16,7 +16,7 @@ function Login() {
 			});
 			localStorage.setItem("token", result.data.token);
 			localStorage.setItem("email", user.email);
-			navigate("/chat");
+			navigate("/room");
 		} else
 			notification.warning({
 				placement: "top",

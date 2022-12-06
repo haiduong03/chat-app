@@ -108,11 +108,10 @@ sup {
 
 .button-cancel {
 	background-color: red;
-	/* font-size: 20px;
-	max-height: 10px;
-	line-height: 1px;
-	padding: 20px;
-	margin: 10px 0px 10px 10px; */
+}
+
+.button-warning {
+	background-color: orangered;
 }
 
 .button-accept {

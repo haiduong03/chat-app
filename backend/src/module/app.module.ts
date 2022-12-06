@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TokenMiddleware } from 'src/middleware/token.middleware';
 import { UserController } from '../controller/user.controller';
-import { message, reqFriend, userModel } from '../model/user.model';
+import { message, reqFriend, room, userModel } from '../model/user.model';
 import { UserService } from '../service/user.service';
 import { ChatGateway } from '../socket/chat.gateway';
 @Module({
@@ -30,6 +30,10 @@ import { ChatGateway } from '../socket/chat.gateway';
       {
         name: 'message',
         schema: message,
+      },
+      {
+        name: 'room',
+        schema: room,
       },
     ]),
     JwtModule.register({ secret: process.env.TOKEN_KEY }),
